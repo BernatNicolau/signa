@@ -1,25 +1,29 @@
-[tool.poetry]
+[project]
 name = "my-notebooks"
 version = "0.1.0"
 description = "A containerized Jupyter environment for notebooks"
-authors = ["Your Name <you@example.com>"]
 readme = "README.md"
+requires-python = ">=3.11"
+authors = [{name = "Your Name", email = "you@example.com"}]
+dependencies = [
+    "torch",
+    "matplotlib",
+    "seaborn",
+    "lightning",
+    "pandas",
+    "scikit-learn",
+    "bertopic",
+    "datasets",
+    "datamapplot",
+    "wordcloud",
+    "jupyter",
+    "tensorboard",
+    "ruff>=0.15.9",
+]
 
-[tool.poetry.dependencies]
-python = "^3.11"
-torch = "*"
-matplotlib = "*"
-seaborn = "*"
-lightning = "*"
-pandas = "*"
-scikit-learn = "*"
-bertopic = "*"
-datasets = "*"
-datamapplot = "*"
-wordcloud = "*"
-jupyter = "*"
-tensorboard = "*"
+[tool.uv]
+package = false
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
