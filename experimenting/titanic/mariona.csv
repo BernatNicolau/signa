@@ -1,0 +1,3 @@
+PassengerId,Pclass,Name,Sex,Age,SibSp,Parch,Ticket,Fare,Cabin,Embarked
+1,3,"Roca, Miss. Mariona",female,28.5,0,0,0,20,,C
+2,3,"Nicolau, Mr. Bernat",male,29,0,0,0,20,,C
