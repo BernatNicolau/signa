@@ -130,7 +130,7 @@ def get_feature_pipeline(num_features=None, cat_features=None):
     cat_transformer = Pipeline(
         steps=[
             ("imputer", SimpleImputer(strategy="constant", fill_value="missing")),
-            ("encoder", ("ordinal", OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1))),
+            ("ordinal", OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1)),
         ]
     )
 
@@ -266,7 +266,8 @@ trainer = L.Trainer(
 
 
 trainer.fit(lit_model, data)
-lit_model = LitModel.load_from_checkpoint(trainer.checkpoint_callback.best_model_path, model=myNN(data.input_dim))
+dm = lit_model.trainer.datamodule
+lit_model = LitModel.load_from_checkpoint(trainer.checkpoint_callback.best_model_path, model=myNN(num_numerical_cols=len(dm.num_features), cat_dims=dm.cat_dims))
 best_val = trainer.checkpoint_callback.best_model_score
 print(f"Best Val Loss: {best_val:.4f}, path: {trainer.checkpoint_callback.best_model_path}")
 lit_model.eval()
@@ -274,8 +275,8 @@ all_logits = []
 all_truth = []
 with torch.no_grad():
     for batch in data.val_dataloader():
-        x, y = batch
-        logits = lit_model(x)
+        x_num, x_cat, y = batch
+        logits = lit_model(x_num, x_cat)
 
         # Move to CPU and convert to numpy to free up GPU memory
         all_logits.append(logits.cpu().numpy().reshape(-1))
@@ -291,8 +292,8 @@ all_logits = []
 all_truth = []
 with torch.no_grad():
     for batch in data.test_dataloader():
-        x, y = batch
-        logits = lit_model(x)
+        x_num, x_cat, y = batch
+        logits = lit_model(x_num, x_cat)
 
         # Move to CPU and convert to numpy to free up GPU memory
         all_logits.append(logits.cpu().numpy().reshape(-1))
